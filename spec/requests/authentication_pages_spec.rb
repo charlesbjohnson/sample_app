@@ -58,12 +58,12 @@ describe "Authentication" do
 
       describe "in the Users controller" do
 
-        describe "submitting a GET to the Users#new action" do
+        describe "submitting to the new action" do
           before { get signup_path }
           specify { expect(response).to redirect_to(root_path) }
         end
 
-        describe "submitting a POST to the Users#create action" do
+        describe "submitting to the create action" do
 
           describe "redirects to root path when creating new account" do
             before { post users_path }
@@ -71,7 +71,7 @@ describe "Authentication" do
           end
 
           it "does not create a new user" do
-            expect { post users_path }.not_to change(User, :count).by(1)
+            expect { post users_path }.not_to change(User, :count)
           end
         end
       end
@@ -91,7 +91,7 @@ describe "Authentication" do
           end
 
           it "does not allow admin to delete (him/her)self" do
-            expect { delete(user_path(admin)) }.not_to change(User, :count).by(-1)
+            expect { delete(user_path(admin)) }.not_to change(User, :count)
           end
         end
       end
@@ -142,6 +142,19 @@ describe "Authentication" do
         describe "visiting the user index" do
           before { visit users_path }
           it { should have_title('Sign in') }
+        end
+      end
+
+      describe "in the Microposts controller" do
+
+        describe "submitting to the create action" do
+          before { post microposts_path }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
+
+        describe "submitting to the destroy action" do
+          before { delete micropost_path(FactoryGirl.create(:micropost)) }
+          specify { expect(response).to redirect_to(signin_path) }
         end
       end
     end
